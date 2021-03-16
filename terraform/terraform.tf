@@ -76,6 +76,7 @@ resource "azurerm_network_security_group" "DEV-NSG" {
  }
 
 
+# Create network interface pour machine Dev-web
 resource "azurerm_network_interface" "NetIf-LABS-02" {
   name                = "NetIf-LABS-02-nic"
   location            = azurerm_resource_group.RG-LABS-02.location
@@ -89,6 +90,7 @@ resource "azurerm_network_interface" "NetIf-LABS-02" {
   }
 }
 
+# Create network interface pour machine Dev-app
 resource "azurerm_network_interface" "NetIf-LABS-02-1" {
   name                = "NetIf-LABS-02-1-nic"
   location            = azurerm_resource_group.RG-LABS-02.location
@@ -101,6 +103,7 @@ resource "azurerm_network_interface" "NetIf-LABS-02-1" {
   }
 }
 
+# Create network interface pour machine Dev-bdd
 resource "azurerm_network_interface" "NetIf-LABS-02-2" {
   name                = "NetIf-LABS-02-2-nic"
   location            = azurerm_resource_group.RG-LABS-02.location
@@ -113,6 +116,7 @@ resource "azurerm_network_interface" "NetIf-LABS-02-2" {
   }
 }
 
+# Create virtual machine Dev-web
 resource "azurerm_linux_virtual_machine" "web" {
   name                = "Dev-web"
   resource_group_name = azurerm_resource_group.RG-LABS-02.name
@@ -141,6 +145,7 @@ resource "azurerm_linux_virtual_machine" "web" {
   }
 }
 
+# Create virtual machine Dev-app
 resource "azurerm_linux_virtual_machine" "app" {
   name                = "Dev-app"
   resource_group_name = azurerm_resource_group.RG-LABS-02.name
@@ -169,6 +174,7 @@ resource "azurerm_linux_virtual_machine" "app" {
   }
 }
 
+# Create virtual machine Dev-bdd
 resource "azurerm_linux_virtual_machine" "bdd" {
   name                = "Dev-bdd"
   resource_group_name = azurerm_resource_group.RG-LABS-02.name
