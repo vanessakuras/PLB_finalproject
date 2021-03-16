@@ -14,7 +14,7 @@ provider "azurerm" {
   features {}
 }
 
-# Create a resource group
+# Create a resource group if it doesn't exist
 resource "azurerm_resource_group" "RG-LABS-02" {
   name     = "RG-LABS-02"
   location = "North Europe"
@@ -23,20 +23,61 @@ resource "azurerm_resource_group" "RG-LABS-02" {
 # Create a virtual network within the resource group
 resource "azurerm_virtual_network" "VPN-LABS-02" {
   name                = "VPN-LABS-02-network"
-  address_space       = ["10.0.0.0/16"]
+  address_space       = ["192.168.0.0/16"]
   location            = azurerm_resource_group.RG-LABS-02.location
   resource_group_name = azurerm_resource_group.RG-LABS-02.name
 }
 
+# Create subnet
 resource "azurerm_subnet" "Subnet-LABS-02" {
-  name                 = "internal"
+  name                 = "DEV-LABS-02-Subnet"
   resource_group_name  = azurerm_resource_group.RG-LABS-02.name
   virtual_network_name = azurerm_virtual_network.VPN-LABS-02.name
-  address_prefixes     = ["10.0.2.0/24"]
+  address_prefixes     = ["192.168.1.0/24"]
 }
 
+# Create public IPs
+resource "azurerm_public_ip" "myterraformpublicip" {
+    name                = "myPublicIP"
+    location            = azurerm_resource_group.RG-LABS-02.location
+    resource_group_name = azurerm_resource_group.RG-LABS-02.name
+    allocation_method   = "Dynamic"
+}
+
+# Create Network Security Group and Rule
+resource "azurerm_network_security_group" "DEV-NSG" {
+    name                = "DEV-LABS-02-NetworkSecurityGroup"
+    location            = azurerm_resource_group.RG-LABS-02.location
+    resource_group_name = azurerm_resource_group.RG-LABS-02.name
+
+    security_rule {
+        name                       = "SSH"
+        priority                   = 1001
+        direction                  = "Inbound"
+        access                     = "Allow"
+        protocol                   = "Tcp"
+        source_port_range          = "*"
+        destination_port_range     = "22"
+        source_address_prefix      = "*"
+        destination_address_prefix = "*"
+    }
+
+    security_rule {
+        name                       = "http"
+        priority                   = 1002
+        direction                  = "Inbound"
+        access                     = "Allow"
+        protocol                   = "Tcp"
+        source_port_range          = "*"
+        destination_port_range     = "80"
+        source_address_prefix      = "*"
+        destination_address_prefix = "*"
+    }
+ }
+
+
 resource "azurerm_network_interface" "NetIf-LABS-02" {
-  name                = "NetIf-LABS-02-nic1"
+  name                = "NetIf-LABS-02-nic"
   location            = azurerm_resource_group.RG-LABS-02.location
   resource_group_name = azurerm_resource_group.RG-LABS-02.name
 
@@ -44,6 +85,7 @@ resource "azurerm_network_interface" "NetIf-LABS-02" {
     name                          = "internal"
     subnet_id                     = azurerm_subnet.Subnet-LABS-02.id
     private_ip_address_allocation = "Dynamic"
+    public_ip_address_id          = azurerm_public_ip.myterraformpublicip.id
   }
 }
 
@@ -72,10 +114,10 @@ resource "azurerm_network_interface" "NetIf-LABS-02-2" {
 }
 
 resource "azurerm_linux_virtual_machine" "web" {
-  name                = "web-machine"
+  name                = "Dev-web"
   resource_group_name = azurerm_resource_group.RG-LABS-02.name
   location            = azurerm_resource_group.RG-LABS-02.location
-  size                = "Standard_F2"
+  size                = "Standard_B1ms"
   admin_username      = "azureuser"
   network_interface_ids = [
     azurerm_network_interface.NetIf-LABS-02.id,
@@ -100,10 +142,10 @@ resource "azurerm_linux_virtual_machine" "web" {
 }
 
 resource "azurerm_linux_virtual_machine" "app" {
-  name                = "app-machine"
+  name                = "Dev-app"
   resource_group_name = azurerm_resource_group.RG-LABS-02.name
   location            = azurerm_resource_group.RG-LABS-02.location
-  size                = "Standard_F2"
+  size                = "Standard_B1ms"
   admin_username      = "azureuser"
   network_interface_ids = [
     azurerm_network_interface.NetIf-LABS-02-1.id,
@@ -128,10 +170,10 @@ resource "azurerm_linux_virtual_machine" "app" {
 }
 
 resource "azurerm_linux_virtual_machine" "bdd" {
-  name                = "bdd-machine"
+  name                = "Dev-bdd"
   resource_group_name = azurerm_resource_group.RG-LABS-02.name
   location            = azurerm_resource_group.RG-LABS-02.location
-  size                = "Standard_F2"
+  size                = "Standard_B1ms"
   admin_username      = "azureuser"
   network_interface_ids = [
     azurerm_network_interface.NetIf-LABS-02-2.id,
