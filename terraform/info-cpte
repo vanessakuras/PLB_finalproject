@@ -1,0 +1,14 @@
+{
+    "cloudName": "AzureCloud",
+    "homeTenantId": "990ace92-b5f8-4944-a125-814a6b2fdfac",
+    "id": "3cd32955-08fb-4f9c-a5b3-04bb80b4b53a",
+    "isDefault": true,
+    "managedByTenants": [],
+    "name": "Paiement à l'utilisation",
+    "state": "Enabled",
+    "tenantId": "990ace92-b5f8-4944-a125-814a6b2fdfac",
+    "user": {
+      "name": "student07@ilkilabs.info",
+      "type": "user"
+    }
+  }
