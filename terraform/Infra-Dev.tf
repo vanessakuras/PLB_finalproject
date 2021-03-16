@@ -75,7 +75,6 @@ resource "azurerm_network_security_group" "DEV-NSG" {
     }
  }
 
-
 # Create network interface pour machine Dev-web
 resource "azurerm_network_interface" "NetIf-LABS-02" {
   name                = "NetIf-LABS-02-nic"
@@ -90,6 +89,12 @@ resource "azurerm_network_interface" "NetIf-LABS-02" {
   }
 }
 
+# Connect the security group to the network interface Dev-web
+resource "azurerm_network_interface_security_group_association" "NSG-NetIf-LABS-02" {
+    network_interface_id      = azurerm_network_interface.NetIf-LABS-02.id
+    network_security_group_id = azurerm_network_security_group.DEV-NSG.id
+}
+
 # Create network interface pour machine Dev-app
 resource "azurerm_network_interface" "NetIf-LABS-02-1" {
   name                = "NetIf-LABS-02-1-nic"
@@ -101,6 +106,11 @@ resource "azurerm_network_interface" "NetIf-LABS-02-1" {
     subnet_id                     = azurerm_subnet.Subnet-LABS-02.id
     private_ip_address_allocation = "Dynamic"
   }
+}
+# Connect the security group to the network interface Dev-app
+resource "azurerm_network_interface_security_group_association" "NSG-NetIf-LABS-02-1" {
+    network_interface_id      = azurerm_network_interface.NetIf-LABS-02-1.id
+    network_security_group_id = azurerm_network_security_group.DEV-NSG.id
 }
 
 # Create network interface pour machine Dev-bdd
@@ -114,6 +124,12 @@ resource "azurerm_network_interface" "NetIf-LABS-02-2" {
     subnet_id                     = azurerm_subnet.Subnet-LABS-02.id
     private_ip_address_allocation = "Dynamic"
   }
+}
+
+# Connect the security group to the network interface Dev-bdd
+resource "azurerm_network_interface_security_group_association" "NSG-NetIf-LABS-02-2" {
+    network_interface_id      = azurerm_network_interface.NetIf-LABS-02-2.id
+    network_security_group_id = azurerm_network_security_group.DEV-NSG.id
 }
 
 # Create virtual machine Dev-web
