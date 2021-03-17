@@ -58,7 +58,7 @@ resource "azurerm_network_security_group" "DEV-NSG" {
         protocol                   = "Tcp"
         source_port_range          = "*"
         destination_port_range     = "22"
-        source_address_prefix      = "*"
+        source_address_prefix      = "192.168.0.0/16"
         destination_address_prefix = "*"
     }
 
@@ -70,7 +70,7 @@ resource "azurerm_network_security_group" "DEV-NSG" {
         protocol                   = "Tcp"
         source_port_range          = "*"
         destination_port_range     = "80"
-        source_address_prefix      = "*"
+        source_address_prefix      = "192.168.0.0/16"
         destination_address_prefix = "*"
     }
  }
