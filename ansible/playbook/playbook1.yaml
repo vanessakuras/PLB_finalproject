@@ -1,0 +1,52 @@
+---
+- hosts: web
+  become: true
+
+  tasks:
+    - name: Verification de la connexion
+      ping:
+
+    - name: Installation Advanced Packaging Tool - Update & Upgrade
+      apt:
+        update_cache: yes
+        upgrade: dist
+
+    - name: Installation Git
+      apt:
+        name: git
+        state: latest
+        update_cache: yes
+
+    - name: Clone Git repository
+      git:
+        clone: yes      
+        repo: https://github.com/brichbourg/Multi-Tier-App-Demo.git
+        dest: /home/azureuser/Multi-Tier-APP-Demo
+
+    - name: Installation Apache2
+      apt:
+        name: apache2
+        state: latest
+        update_cache: yes
+
+    - name: Installation PIP
+      apt: 
+        name: python3-pip
+        state: latest
+        update_cache: yes
+
+    - name: Installation Python Packages
+      pip: 
+        name: pymysql
+        executable: pip3
+        
+    - name: Commands to make some changes to how Apache operates
+      ansible.builtin.shell:
+        cmd: a2enmod mpm_prefork cgi
+        cmd: a2dismod mpm_event
+
+  handlers:    
+    - name: Reload Apache
+      service:
+        name: apache2
+        state: reloaded
