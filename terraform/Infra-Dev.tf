@@ -24,7 +24,7 @@ resource "azurerm_resource_group" "RG-LABS-02" {
 resource "azurerm_virtual_network" "VPN-LABS-02" {
   name                = "VPN-LABS-02-network"
   address_space       = ["192.168.0.0/16"]
-  location            = azurerm_resource_group.RG-LABS-02.location
+  location            = "France Central"
   resource_group_name = azurerm_resource_group.RG-LABS-02.name
 }
 
@@ -39,7 +39,7 @@ resource "azurerm_subnet" "Subnet-LABS-02" {
 # Create public IPs
 resource "azurerm_public_ip" "myterraformpublicip" {
     name                = "myPublicIP"
-    location            = azurerm_resource_group.RG-LABS-02.location
+    location            = "France Central"
     resource_group_name = azurerm_resource_group.RG-LABS-02.name
     allocation_method   = "Dynamic"
 }
@@ -47,7 +47,7 @@ resource "azurerm_public_ip" "myterraformpublicip" {
 # Create Network Security Group and Rule
 resource "azurerm_network_security_group" "DEV-NSG" {
     name                = "DEV-LABS-02-NetworkSecurityGroup"
-    location            = azurerm_resource_group.RG-LABS-02.location
+    location            = "France Central"
     resource_group_name = azurerm_resource_group.RG-LABS-02.name
 
     security_rule {
@@ -78,7 +78,7 @@ resource "azurerm_network_security_group" "DEV-NSG" {
 # Create network interface pour machine Dev-web
 resource "azurerm_network_interface" "NetIf-LABS-02" {
   name                = "NetIf-LABS-02-nic"
-  location            = azurerm_resource_group.RG-LABS-02.location
+  location            = "France Central"
   resource_group_name = azurerm_resource_group.RG-LABS-02.name
 
   ip_configuration {
@@ -98,7 +98,7 @@ resource "azurerm_network_interface_security_group_association" "NSG-NetIf-LABS-
 # Create network interface pour machine Dev-app
 resource "azurerm_network_interface" "NetIf-LABS-02-1" {
   name                = "NetIf-LABS-02-1-nic"
-  location            = azurerm_resource_group.RG-LABS-02.location
+  location            = "France Central"
   resource_group_name = azurerm_resource_group.RG-LABS-02.name
 
   ip_configuration {
@@ -116,7 +116,7 @@ resource "azurerm_network_interface_security_group_association" "NSG-NetIf-LABS-
 # Create network interface pour machine Dev-bdd
 resource "azurerm_network_interface" "NetIf-LABS-02-2" {
   name                = "NetIf-LABS-02-2-nic"
-  location            = azurerm_resource_group.RG-LABS-02.location
+  location            = "France Central"
   resource_group_name = azurerm_resource_group.RG-LABS-02.name
 
   ip_configuration {
@@ -136,7 +136,7 @@ resource "azurerm_network_interface_security_group_association" "NSG-NetIf-LABS-
 resource "azurerm_linux_virtual_machine" "web" {
   name                = "Dev-web"
   resource_group_name = azurerm_resource_group.RG-LABS-02.name
-  location            = azurerm_resource_group.RG-LABS-02.location
+  location            = "France Central"
   size                = "Standard_B1ms"
   admin_username      = "azureuser"
   network_interface_ids = [
@@ -165,7 +165,7 @@ resource "azurerm_linux_virtual_machine" "web" {
 resource "azurerm_linux_virtual_machine" "app" {
   name                = "Dev-app"
   resource_group_name = azurerm_resource_group.RG-LABS-02.name
-  location            = azurerm_resource_group.RG-LABS-02.location
+  location            = "France Central"
   size                = "Standard_B1ms"
   admin_username      = "azureuser"
   network_interface_ids = [
@@ -194,7 +194,7 @@ resource "azurerm_linux_virtual_machine" "app" {
 resource "azurerm_linux_virtual_machine" "bdd" {
   name                = "Dev-bdd"
   resource_group_name = azurerm_resource_group.RG-LABS-02.name
-  location            = azurerm_resource_group.RG-LABS-02.location
+  location            = "France Central"
   size                = "Standard_B1ms"
   admin_username      = "azureuser"
   network_interface_ids = [

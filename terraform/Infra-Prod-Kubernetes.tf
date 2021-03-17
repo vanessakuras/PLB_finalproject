@@ -24,7 +24,7 @@
 #resource "azurerm_virtual_network" "VPN-LABS-02" {
 #  name                = "VPN-LABS-02-network"
 #  address_space       = ["192.168.0.0/16"]
-#  location            = azurerm_resource_group.RG-LABS-02.location
+#  location            = "France Central"
 #  resource_group_name = azurerm_resource_group.RG-LABS-02.name
 #}
 
@@ -39,7 +39,7 @@
 # Create public IPs
 #resource "azurerm_public_ip" "myterraformpublicip" {
 #    name                = "myPublicIP"
-#    location            = azurerm_resource_group.RG-LABS-02.location
+#    location            = "France Central"
 #    resource_group_name = azurerm_resource_group.RG-LABS-02.name
 #    allocation_method   = "Dynamic"
 #}
@@ -47,7 +47,7 @@
 # Create Network Security Group and Rule
 #resource "azurerm_network_security_group" "DEV-NSG" {
 #    name                = "DEV-LABS-02-NetworkSecurityGroup"
-#    location            = azurerm_resource_group.RG-LABS-02.location
+#    location            = "France Central"
 #    resource_group_name = azurerm_resource_group.RG-LABS-02.name
 #
 #    security_rule {
@@ -78,7 +78,7 @@
 # Create network interface pour machine Kub-Mst
 resource "azurerm_network_interface" "NetIf-LABS-02-3" {
  name                = "NetIf-LABS-02-3-nic"
-  location            = azurerm_resource_group.RG-LABS-02.location
+  location            = "France Central"
   resource_group_name = azurerm_resource_group.RG-LABS-02.name
 
   ip_configuration {
@@ -96,9 +96,9 @@ resource "azurerm_network_interface_security_group_association" "NSG-NetIf-LABS-
 }
 
 # Create network interface pour machine Kub-wk1
-resource "azurerm_network_interface" "NetIf-LABS-02-4" {
-  name                = "NetIf-LABS-02-4-nic"
-  location            = azurerm_resource_group.RG-LABS-02.location
+resource "azurerm_network_interface" "NetIf-LABS-02-4-1" {
+  name                = "NetIf-LABS-02-4-1-nic"
+  location            = "France Central"
   resource_group_name = azurerm_resource_group.RG-LABS-02.name
 
   ip_configuration {
@@ -107,16 +107,17 @@ resource "azurerm_network_interface" "NetIf-LABS-02-4" {
     private_ip_address_allocation = "Dynamic"
   }
 }
+
 # Connect the security group to the network interface Kub-wk1
-resource "azurerm_network_interface_security_group_association" "NSG-NetIf-LABS-02-4" {
-    network_interface_id      = azurerm_network_interface.NetIf-LABS-02-4.id
+resource "azurerm_network_interface_security_group_association" "NSG-NetIf-LABS-02-4-1" {
+    network_interface_id      = azurerm_network_interface.NetIf-LABS-02-4-1.id
     network_security_group_id = azurerm_network_security_group.DEV-NSG.id
 }
 
-# Create network interface pour machine Kub-wk1
+# Create network interface pour machine Kub-wk2
 resource "azurerm_network_interface" "NetIf-LABS-02-5" {
   name                = "NetIf-LABS-02-5-nic"
-  location            = azurerm_resource_group.RG-LABS-02.location
+  location            = "France Central"
   resource_group_name = azurerm_resource_group.RG-LABS-02.name
 
   ip_configuration {
@@ -136,7 +137,7 @@ resource "azurerm_network_interface_security_group_association" "NSG-NetIf-LABS-
 resource "azurerm_linux_virtual_machine" "KUB-Mst" {
   name                = "Kub-master"
   resource_group_name = azurerm_resource_group.RG-LABS-02.name
-  location            = azurerm_resource_group.RG-LABS-02.location
+  location            = "France Central"
   size                = "Standard_F2"
   admin_username      = "azureuser"
   network_interface_ids = [
@@ -165,11 +166,11 @@ resource "azurerm_linux_virtual_machine" "KUB-Mst" {
 resource "azurerm_linux_virtual_machine" "KUB-Wk1" {
   name                = "Kub-worker1"
   resource_group_name = azurerm_resource_group.RG-LABS-02.name
-  location            = azurerm_resource_group.RG-LABS-02.location
+  location            = "France Central"
   size                = "Standard_DS1_v2"
   admin_username      = "azureuser"
   network_interface_ids = [
-    azurerm_network_interface.NetIf-LABS-02-4.id,
+    azurerm_network_interface.NetIf-LABS-02-4-1.id,
   ]
 
   admin_ssh_key {
@@ -194,7 +195,7 @@ resource "azurerm_linux_virtual_machine" "KUB-Wk1" {
 resource "azurerm_linux_virtual_machine" "KUB-Wk2" {
   name                = "Kub-worker2"
   resource_group_name = azurerm_resource_group.RG-LABS-02.name
-  location            = azurerm_resource_group.RG-LABS-02.location
+  location            = "France Central"
   size                = "Standard_DS1_v2"
   admin_username      = "azureuser"
   network_interface_ids = [
