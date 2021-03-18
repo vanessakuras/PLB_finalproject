@@ -29,6 +29,11 @@
         state: latest
         update_cache: yes
 
+    - name: Gestion du service Apache2
+      apt:
+        name: apache2
+        state: latest
+        
     - name: Installation PIP
       apt: 
         name: python3-pip
@@ -42,11 +47,22 @@
         
     - name: Commands to make some changes to how Apache operates
       ansible.builtin.shell:
-        cmd: a2enmod mpm_prefork cgi
         cmd: a2dismod mpm_event
+        cmd: a2enmod mpm_prefork cgi
 
+    - name: Download 000-default.conf
+      get_url:
+        url: https://s3.amazonaws.com/richbourg-s3/mtwa/web/000-default.conf
+        dest: /etc/apache2/sites-enabled/
+
+    - name: Download ports.conf
+      get_url:
+        url: https://s3.amazonaws.com/richbourg-s3/mtwa/web/ports.conf
+        dest: /etc/apache2/
+        
   handlers:    
     - name: Reload Apache
       service:
         name: apache2
         state: reloaded
+
