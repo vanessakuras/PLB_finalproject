@@ -1,6 +1,6 @@
 # PLB_finalproject
 
-Déploiment d'une application hébergée sur Git Hub https://github.com/ilkilab/Multi-Tier-App-Demo.git, déployée dans une infrastructure On Premise décrite dans un Document d'Architecture Technique.
+Déploiement d'une application hébergée sur Git Hub https://github.com/ilkilab/Multi-Tier-App-Demo.git, déployée dans une infrastructure On Premise décrite dans un Document d'Architecture Technique.
 
 La première étape consiste à déployer sur un provider du cloud (Azure ou AWS) cette infrastructure via Terraform. 
 
