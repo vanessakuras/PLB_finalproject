@@ -38,6 +38,12 @@
         name: apache2
         state: latest
         
+    - name: Lancement Apache2
+      service:
+        name: apache2
+        state: started
+        enabled: yes
+
     - name: Installation PIP
       apt: 
         force_apt_get: yes
@@ -53,20 +59,56 @@
     - name: Commands to make some changes to how Apache operates
       ansible.builtin.shell:
         cmd: a2dismod mpm_event; a2enmod mpm_prefork cgi
+      notify:
+        - Restart Apache2
 
     - name: Download 000-default.conf
       get_url:
         url: https://s3.amazonaws.com/richbourg-s3/mtwa/web/000-default.conf
         dest: /etc/apache2/sites-enabled/
+      notify:
+        - Restart Apache2
 
     - name: Download ports.conf
       get_url:
         url: https://s3.amazonaws.com/richbourg-s3/mtwa/web/ports.conf
         dest: /etc/apache2/
+      notify:
+        - Restart Apache2
         
+    - name: Instruction 1 install.sh
+      file:
+        state: directory
+        path: /etc/mtwa
+
+    - name: Instruction 2 install.sh
+      file:
+        state: directory
+        path: /var/www/html/appdemo
+
+    - name: Instruction 3 install.sh
+      copy:
+        remote_src: yes      
+        src: /home/azureuser/Multi-Tier-APP-Demo/mtwa.conf 
+        dest: /etc/mtwa/mtwa.conf
+
+    - name: Instruction 4 install.sh
+      copy:
+        remote_src: yes      
+        directory_mode: yes
+        src: /home/azureuser/Multi-Tier-APP-Demo/html/
+        dest: /var/www/html/appdemo/
+
+    - name: Instruction 5 install.sh
+      copy:
+        remote_src: yes      
+        directory_mode: yes
+        src: /home/azureuser/Multi-Tier-APP-Demo/scripts/ 
+        dest: /var/www/html/appdemo/
+
   handlers:    
-    - name: Reload Apache
+    - name: Restart Apache2
       service:
         name: apache2
-        state: reloaded
+        state: restarted
 
