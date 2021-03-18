@@ -8,11 +8,13 @@
 
     - name: Installation Advanced Packaging Tool - Update & Upgrade
       apt:
+        force_apt_get: yes
         update_cache: yes
         upgrade: dist
 
     - name: Installation Git
       apt:
+        force_apt_get: yes
         name: git
         state: latest
         update_cache: yes
@@ -25,18 +27,21 @@
 
     - name: Installation Apache2
       apt:
+        force_apt_get: yes
         name: apache2
         state: latest
         update_cache: yes
 
     - name: Gestion du service Apache2
       apt:
+        force_apt_get: yes
         name: apache2
         state: latest
         
     - name: Installation PIP
       apt: 
-        name: python3-pip
+        force_apt_get: yes
+        name: python-pip
         state: latest
         update_cache: yes
 
@@ -47,8 +52,7 @@
         
     - name: Commands to make some changes to how Apache operates
       ansible.builtin.shell:
-        cmd: a2dismod mpm_event
-        cmd: a2enmod mpm_prefork cgi
+        cmd: a2dismod mpm_event; a2enmod mpm_prefork cgi
 
     - name: Download 000-default.conf
       get_url:
