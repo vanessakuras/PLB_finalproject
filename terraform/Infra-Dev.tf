@@ -46,7 +46,7 @@ resource "azurerm_public_ip" "myterraformpublicip" {
 
 # Create Network Security Group1 and Rule
 resource "azurerm_network_security_group" "DEV-NSG" {
-    name                = "DEV-LABS-02-NetworkSecurityGroup1"
+    name                = "DEV-LABS-02-NetworkSecurityGroup-web-app"
     location            = "France Central"
     resource_group_name = azurerm_resource_group.RG-LABS-02.name
 
@@ -77,7 +77,7 @@ resource "azurerm_network_security_group" "DEV-NSG" {
 
 # Create Network Security Group2 and Rule
 resource "azurerm_network_security_group" "DEV-NSG2" {
-    name                = "DEV-LABS-02-NetworkSecurityGroup2"
+    name                = "DEV-LABS-02-NetworkSecurityGroup-bdd"
     location            = "France Central"
     resource_group_name = azurerm_resource_group.RG-LABS-02.name
 
@@ -105,8 +105,10 @@ resource "azurerm_network_security_group" "DEV-NSG2" {
         destination_address_prefix = "*"
  }
 }
-resource "azurerm_network_interface" "NetIf-LABS-02" {
-  name                = "NetIf-LABS-02-nic"
+
+# Create network interface pour machine Dev-web
+resource "azurerm_network_interface" "NetIf-LABS-02-web" {
+  name                = "NetIf-LABS-02-web-nic"
   location            = "France Central"
   resource_group_name = azurerm_resource_group.RG-LABS-02.name
 
@@ -119,13 +121,14 @@ resource "azurerm_network_interface" "NetIf-LABS-02" {
 }
 
 # Connect the security group to the network interface Dev-web
-resource "azurerm_network_interface_security_group_association" "NSG-NetIf-LABS-02" {
-    network_interface_id      = azurerm_network_interface.NetIf-LABS-02.id
+resource "azurerm_network_interface_security_group_association" "NSG-NetIf-LABS-02-web" {
+    network_interface_id      = azurerm_network_interface.NetIf-LABS-02-web.id
     network_security_group_id = azurerm_network_security_group.DEV-NSG.id
 }
+
 # Create network interface pour machine Dev-app
-resource "azurerm_network_interface" "NetIf-LABS-02-1" {
-  name                = "NetIf-LABS-02-1-nic"
+resource "azurerm_network_interface" "NetIf-LABS-02-app" {
+  name                = "NetIf-LABS-02-app-nic"
   location            = "France Central"
   resource_group_name = azurerm_resource_group.RG-LABS-02.name
 
@@ -135,15 +138,16 @@ resource "azurerm_network_interface" "NetIf-LABS-02-1" {
     private_ip_address_allocation = "Dynamic"
   }
 }
+
 # Connect the security group to the network interface Dev-app
-resource "azurerm_network_interface_security_group_association" "NSG-NetIf-LABS-02-1" {
-    network_interface_id      = azurerm_network_interface.NetIf-LABS-02-1.id
+resource "azurerm_network_interface_security_group_association" "NSG-NetIf-LABS-02-app" {
+    network_interface_id      = azurerm_network_interface.NetIf-LABS-02-app.id
     network_security_group_id = azurerm_network_security_group.DEV-NSG.id
 }
 
 # Create network interface pour machine Dev-bdd
-resource "azurerm_network_interface" "NetIf-LABS-02-2" {
-  name                = "NetIf-LABS-02-2-nic"
+resource "azurerm_network_interface" "NetIf-LABS-02-bdd" {
+  name                = "NetIf-LABS-02-bdd-nic"
   location            = "France Central"
   resource_group_name = azurerm_resource_group.RG-LABS-02.name
 
@@ -155,8 +159,8 @@ resource "azurerm_network_interface" "NetIf-LABS-02-2" {
 }
 
 # Connect the security group to the network interface Dev-bdd
-resource "azurerm_network_interface_security_group_association" "NSG-NetIf-LABS-02-2" {
-    network_interface_id      = azurerm_network_interface.NetIf-LABS-02-2.id
+resource "azurerm_network_interface_security_group_association" "NSG-NetIf-LABS-02-bdd" {
+    network_interface_id      = azurerm_network_interface.NetIf-LABS-02-bdd.id
     network_security_group_id = azurerm_network_security_group.DEV-NSG2.id
 }
 
@@ -168,7 +172,7 @@ resource "azurerm_linux_virtual_machine" "web" {
   size                = "Standard_B1ms"
   admin_username      = "azureuser"
   network_interface_ids = [
-    azurerm_network_interface.NetIf-LABS-02.id,
+    azurerm_network_interface.NetIf-LABS-02-web.id,
   ]
 
   admin_ssh_key {
@@ -197,7 +201,7 @@ resource "azurerm_linux_virtual_machine" "app" {
   size                = "Standard_B1ms"
   admin_username      = "azureuser"
   network_interface_ids = [
-    azurerm_network_interface.NetIf-LABS-02-1.id,
+    azurerm_network_interface.NetIf-LABS-02-app.id,
   ]
 
   admin_ssh_key {
@@ -226,7 +230,7 @@ resource "azurerm_linux_virtual_machine" "bdd" {
   size                = "Standard_B1ms"
   admin_username      = "azureuser"
   network_interface_ids = [
-    azurerm_network_interface.NetIf-LABS-02-2.id,
+    azurerm_network_interface.NetIf-LABS-02-bdd.id,
   ]
 
   admin_ssh_key {
