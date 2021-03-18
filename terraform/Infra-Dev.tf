@@ -44,9 +44,9 @@ resource "azurerm_public_ip" "myterraformpublicip" {
     allocation_method   = "Dynamic"
 }
 
-# Create Network Security Group and Rule
+# Create Network Security Group1 and Rule
 resource "azurerm_network_security_group" "DEV-NSG" {
-    name                = "DEV-LABS-02-NetworkSecurityGroup"
+    name                = "DEV-LABS-02-NetworkSecurityGroup1"
     location            = "France Central"
     resource_group_name = azurerm_resource_group.RG-LABS-02.name
 
@@ -63,7 +63,7 @@ resource "azurerm_network_security_group" "DEV-NSG" {
     }
 
     security_rule {
-        name                       = "http"
+        name                       = "HTTP"
         priority                   = 1002
         direction                  = "Inbound"
         access                     = "Allow"
@@ -72,10 +72,39 @@ resource "azurerm_network_security_group" "DEV-NSG" {
         destination_port_range     = "80"
         source_address_prefix      = "192.168.0.0/16"
         destination_address_prefix = "*"
-    }
  }
+}
 
-# Create network interface pour machine Dev-web
+# Create Network Security Group2 and Rule
+resource "azurerm_network_security_group" "DEV-NSG2" {
+    name                = "DEV-LABS-02-NetworkSecurityGroup2"
+    location            = "France Central"
+    resource_group_name = azurerm_resource_group.RG-LABS-02.name
+
+    security_rule {
+        name                       = "SSH"
+        priority                   = 1001
+        direction                  = "Inbound"
+        access                     = "Allow"
+        protocol                   = "Tcp"
+        source_port_range          = "*"
+        destination_port_range     = "22"
+        source_address_prefix      = "192.168.0.0/16"
+        destination_address_prefix = "*"
+    }
+
+    security_rule {
+        name                       = "sql"
+        priority                   = 1002
+        direction                  = "Inbound"
+        access                     = "Allow"
+        protocol                   = "Tcp"
+        source_port_range          = "*"
+        destination_port_range     = "3306"
+        source_address_prefix      = "192.168.0.0/16"
+        destination_address_prefix = "*"
+ }
+}
 resource "azurerm_network_interface" "NetIf-LABS-02" {
   name                = "NetIf-LABS-02-nic"
   location            = "France Central"
@@ -94,7 +123,6 @@ resource "azurerm_network_interface_security_group_association" "NSG-NetIf-LABS-
     network_interface_id      = azurerm_network_interface.NetIf-LABS-02.id
     network_security_group_id = azurerm_network_security_group.DEV-NSG.id
 }
-
 # Create network interface pour machine Dev-app
 resource "azurerm_network_interface" "NetIf-LABS-02-1" {
   name                = "NetIf-LABS-02-1-nic"
@@ -129,7 +157,7 @@ resource "azurerm_network_interface" "NetIf-LABS-02-2" {
 # Connect the security group to the network interface Dev-bdd
 resource "azurerm_network_interface_security_group_association" "NSG-NetIf-LABS-02-2" {
     network_interface_id      = azurerm_network_interface.NetIf-LABS-02-2.id
-    network_security_group_id = azurerm_network_security_group.DEV-NSG.id
+    network_security_group_id = azurerm_network_security_group.DEV-NSG2.id
 }
 
 # Create virtual machine Dev-web
